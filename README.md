@@ -1,2 +1,0 @@
-# jo.github.io
-Pulse
