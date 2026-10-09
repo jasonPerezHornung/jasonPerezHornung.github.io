@@ -1,0 +1,32 @@
+PULSO 3.0.0 - FINANZAS E INVERSIONES
+
+1. Abre EMPEZAR.html para consultar instalación, actualización y uso.
+2. Publica esta carpeta (la que contiene index.html) en un alojamiento HTTPS.
+3. No publiques copias JSON o CSV de tus finanzas en esa carpeta.
+4. Para actualizar PULSO 2: exporta primero una copia; utiliza el mismo sitio y ruta.
+5. Comprueba saldos, persistencia y copias con datos ficticios antes de usar datos reales.
+
+MÓDULO NUEVO
+Activos individuales: acciones, ETF, fondos, cripto, renta fija, materias primas,
+capital privado y otros. Compras, ventas FIFO, posiciones iniciales, splits,
+precios fechados, gráficos, dividendos y reinversión, CSV de precios y operaciones.
+
+CONSERVADO
+Finanzas, patrimonio neto, ingresos/gastos, deudas, presupuestos, objetivos,
+recurrentes y copias de PULSO 2. La migración no desglosa automáticamente carteras
+agregadas antiguas: sigue las instrucciones para no duplicar el patrimonio.
+
+LÍMITES IMPORTANTES
+No hay conexión a bancos/brókeres, cotizaciones en directo ni calendario automático.
+Los precios y fechas se registran manualmente o importando precios CSV.
+No se ejecutan operaciones financieras. No se calcula una declaración fiscal.
+El rendimiento porcentual es acumulado sobre compras, no anualizado, no TWR/TIR.
+Efectivo y costes en EUR; activos con precios en divisa y cambio manual.
+Datos locales sin cifrado de PULSO. Copia JSON normal y CSV también sin cifrado.
+Se mantienen copias cifradas opcionales mediante contraseña.
+No hay sincronización entre dispositivos. Haz copias externas.
+
+PRUEBAS
+Consulta INFORME_PRUEBAS.txt. Motor: 62 comprobaciones. Interfaz: 52 comprobaciones.
+Interfaz probada en Chromium con almacenamiento simulado. No probado en iPhone
+físico, persistencia real, instalación PWA ni publicación HTTPS. No está publicada.

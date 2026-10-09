@@ -1,0 +1,149 @@
+PULSO 3.0.0 - INFORME DE COMPROBACIONES
+Fecha: 2026-10-09
+
+ALCANCE
+62 comprobaciones de motor en Node.js y 52 de interfaz en Chromium/Playwright.
+Las comprobaciones de interfaz se ejecutaron cargando el HTML real en Chromium,
+con localStorage sustituido por un almacén simulado. El entorno de pruebas impide
+navegar a orígenes HTTP locales, por lo que estas pruebas no validan persistencia
+real entre sesiones, actualización real de service workers ni instalación PWA.
+
+No se ha probado en un iPhone físico ni publicado en HTTPS.
+Sin auditoría independiente de seguridad, contabilidad o fiscalidad.
+Los datos de demostración son ficticios, no precios de valores reales.
+La función de cifrado de copias se conserva de PULSO 2; no se ha repetido en esta
+entrega su prueba criptográfica. No confundir cifrado de copias con cifrado local.
+
+RESUMEN
+- Sintaxis de JavaScript comprobada con node --check.
+- Modelos monetarios en céntimos EUR; unidades como enteros de 1e-8.
+- Migración de datos, compras, ventas parciales, FIFO, divisas y dividendos.
+- Restauración JSON, edición, borrado, deshacer e importación de precios.
+- 5 anchos de pantalla: 360, 390, 430, 820 y 1440 px sin desbordamiento horizontal
+  en los cuatro apartados de inversiones con los datos de prueba.
+- Se comprobó que las cuatro páginas financieras originales siguen renderizando;
+  esto no equivale a repetir todas las pruebas originales de PULSO 2.
+
+COMPROBACIONES DEL MOTOR
+01. PASS - Empty schema 3 validates
+02. PASS - Legacy schema 2 migration preserves all money
+03. PASS - Legacy v1 migration
+04. PASS - Spanish decimal with 8 fractional places
+05. PASS - English decimal
+06. PASS - Invalid decimal rejected
+07. PASS - Excess precision rejected
+08. PASS - Zero quantities rejected
+09. PASS - Fractional units exact atoms
+10. PASS - Purchase debits gross plus fee
+11. PASS - Purchase creates position without duplicating cash
+12. PASS - Purchase fee included in FIFO basis
+13. PASS - Fees count in expense statistics once
+14. PASS - No future lookahead before first trade
+15. PASS - Two lots retain individual bases
+16. PASS - Current units
+17. PASS - Mark to market
+18. PASS - Unrealized gain after fees
+19. PASS - Historical price excludes later quote
+20. PASS - Partial sale consumes first lot then fraction of second
+21. PASS - Realized FIFO gain includes sell fee
+22. PASS - Remaining units after sale
+23. PASS - Total result identity
+24. PASS - Net worth integrates positions and actual sale cash
+25. PASS - Generated transactions deterministic / no duplicates on sync
+26. PASS - Oversell rejected
+27. PASS - Removing an acquisition needed for subsequent sale rejected
+28. PASS - Same-day sale before buy rejected
+29. PASS - Same-day buy before sale valid
+30. PASS - Expected dividend does not affect cash
+31. PASS - Expected dividend not in performance
+32. PASS - Dividend net equals gross less tax and fees
+33. PASS - Dividend net is added exactly once to net worth
+34. PASS - Received dividend excluded before real payment date
+35. PASS - Total return includes dividend net once
+36. PASS - Negative dividend net rejected
+37. PASS - Future real dividend receipt rejected
+38. PASS - Future expected dividend allowed
+39. PASS - Tampered generated transaction rejected on raw import
+40. PASS - Manual transaction into managed position rejected
+41. PASS - Manual valuation of managed position rejected
+42. PASS - JSON roundtrip preserves calculations
+43. PASS - Complete sale empties residual cost exactly
+44. PASS - Foreign currency records actual purchase FX
+45. PASS - EUR to EUR FX must equal 1
+46. PASS - Opening position does not debit cash
+47. PASS - Original acquisition dates order opening FIFO lots
+48. PASS - Stock split adjusts units and carries cost
+49. PASS - Explicit post-split quote is not double-adjusted
+50. PASS - Reverse split retains total cost
+51. PASS - Split without units is rejected
+52. PASS - Zero market quote allowed for full loss
+53. PASS - Watchlist quote never creates wealth
+54. PASS - Two closing prices same security/date rejected
+55. PASS - Future quote rejected
+56. PASS - Dividend reinvestment requires actual received dividend
+57. PASS - Deleting dividend supporting reinvestment rejected
+58. PASS - Portfolio result equals sum of constituent results
+59. PASS - Portfolio timeline carries prior quotes without future lookahead
+60. PASS - Backup validation protects actual state from bad edits
+61. PASS - Demo validates with no residual generic portfolio
+62. PASS - Time series at most 180 samples for large quote history
+
+COMPROBACIONES DE INTERFAZ (ALMACENAMIENTO SIMULADO)
+01. PASS - Boot without JavaScript exceptions
+02. PASS - Empty state does not inject demonstration balances
+03. PASS - Create cash account through original UI
+04. PASS - Create individual ETF with next-step choice
+05. PASS - Buy updates cash, units and net worth once
+06. PASS - Price update changes position but not cash
+07. PASS - Oversell shows inline validation without saving
+08. PASS - Partial sale leaves correct units and FIFO realized gain
+09. PASS - Expected dividend does not affect net worth
+10. PASS - Confirm dividend pays correct net cash once
+11. PASS - Linked activity opens underlying investment trade
+12. PASS - Editing acquisition recalculates realized and unrealized results
+13. PASS - Undo restores acquisition and linked effects
+14. PASS - Price CSV preview before saving
+15. PASS - Price CSV replaces same date and adds other without duplicates
+16. PASS - Invalid CSV does not partially overwrite price data
+17. PASS - Bulk quote update
+18. PASS - Allocation above 100 rejected
+19. PASS - Allocation target saved
+20. PASS - Search filters individual holdings
+21. PASS - Ticker search finds holding
+22. PASS - User labels rendered as text, not HTML
+23. PASS - USD opening position does not debit EUR cash
+24. PASS - Foreign quote uses provided FX
+25. PASS - Hide amounts masks main investment values
+26. PASS - New rendered instance restores all investment records (simulated storage)
+27. PASS - Old schema 2 opens without corrupt-data warning
+28. PASS - Corrupt local copy preserved, not silently reset
+29. PASS - Demonstration is isolated from real holdings
+30. PASS - Leaving demo restores real holdings
+31. PASS - All investment tabs fit viewport 360 px
+32. PASS - All investment tabs fit viewport 390 px
+33. PASS - All investment tabs fit viewport 430 px
+34. PASS - All investment tabs fit viewport 820 px
+35. PASS - All investment tabs fit viewport 1440 px
+36. PASS - Original home page still renders
+37. PASS - Original wealth page still renders
+38. PASS - Original activity page still renders
+39. PASS - Original plan page still renders
+40. PASS - No JavaScript page exceptions across workflows
+41. PASS - Full JSON import shows review before replacing data
+42. PASS - Full JSON restores holdings, price history and dividends
+43. PASS - Deleting a recorded price removes only that point
+44. PASS - Undo restores removed price
+45. PASS - Reinvestment creates one linked purchase with units
+46. PASS - Repeated reinvest action edits existing purchase instead of duplicating
+47. PASS - Cannot remove dividend that funds a linked reinvestment
+48. PASS - Split form doubles units without doubling wealth
+49. PASS - Price chart responds to selecting recorded point
+50. PASS - Result chart renders
+51. PASS - Methodology and manual-price caveats accessible
+52. PASS - No script exceptions in destructive edits, split and restoration
+
+SHA-256 de index.html: c1bba94b747ffc1378cd9c126168518fec1e5a1f9693d6b96c0cc597eb35ace1
+
+ANTES DE USAR DATOS REALES
+Verifica en tu móvil: instalación, cierre/apertura, persistencia, copia externa y
+restauración. Actualiza la misma dirección de la app sin borrar el almacenamiento.
