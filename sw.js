@@ -1,5 +1,5 @@
 /* Application code only; financial data stay in browser storage. */
-const CACHE='pulso-v3-c1bba94b747f',SHELL=['./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const CACHE='pulso-v3-bcb33001561d',SHELL=['./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>(k.startsWith('pulso-v2-')||k.startsWith('pulso-v3-'))&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{const url=new URL(e.request.url);if(e.request.method!=='GET'||url.origin!==location.origin)return;if(e.request.mode==='navigate'){const base=new URL('./',self.location.href).pathname;if(url.pathname!==base&&url.pathname!==base+'index.html')return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const clone=r.clone();caches.open(CACHE).then(c=>c.put('./index.html',clone));}return r;}).catch(()=>caches.open(CACHE).then(c=>c.match('./index.html'))));return;}e.respondWith(caches.open(CACHE).then(c=>c.match(e.request)).then(r=>r||fetch(e.request)));});

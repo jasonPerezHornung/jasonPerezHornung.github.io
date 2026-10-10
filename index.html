@@ -12,6 +12,120 @@
 @media(max-width:760px){.iv-tabs{justify-content:space-between;gap:10px;margin-bottom:21px}.iv-tabs button{font-size:12px;padding:10px 0 14px}.iv-hero{padding:24px 22px}.iv-hero .amount{font-size:39px;letter-spacing:-1.9px}.iv-hero .split{margin-top:20px;padding-top:17px}.iv-hero .split b{font-size:17px}.iv-hero .split span{font-size:10px}.iv-hero-actions{gap:8px}.iv-hero-actions .btn{font-size:12px;padding:12px 7px}.iv-three-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.iv-three-stats .stat{padding:13px 9px}.iv-three-stats .stat label{font-size:10px}.iv-three-stats .stat b{font-size:16px;letter-spacing:-.55px;margin:9px 0}.iv-three-stats .stat small{font-size:9px;line-height:1.55}.iv-update-notice{gap:5px;padding-bottom:18px}.iv-chart-controls{gap:10px}.iv-plot svg{height:177px}.iv-ylabels{font-size:8px;width:49px}.iv-plot svg{width:calc(100% - 54px)}.iv-chart-readout{gap:7px}.iv-chart-readout strong{font-size:16px}.iv-chart-readout small{margin-left:0;flex-basis:100%;margin-top:0}.iv-position{gap:9px;padding:16px 0}.iv-monogram{width:38px;height:38px;border-radius:12px;font-size:11px}.iv-asset-name{font-size:12px}.iv-asset-meta{font-size:9px}.iv-asset-values strong{font-size:13px}.iv-asset-values small{font-size:10px}.iv-asset-values small span{display:none}.iv-allocation{gap:28px}.iv-donut{width:116px;height:116px}.iv-donut>div{width:87px;height:87px}.iv-holdings-grid{grid-template-columns:1fr}.iv-filterbar{gap:8px}.iv-filterbar input{min-width:100%;width:100%;flex-basis:100%}.iv-filterbar select{min-width:0;font-size:12px}.iv-welcome{padding:26px 22px}.iv-welcome h1{font-size:39px}.iv-welcome .actions{flex-direction:column}.iv-start-steps{gap:15px}.iv-start-steps span{font-size:11px}.iv-detail-head{gap:12px}.iv-detail-head h1{font-size:27px}.iv-detail-head .kicker{font-size:9px;line-height:1.5}.iv-detail-head .iv-monogram{width:48px;height:48px;font-size:14px}.iv-detail-actions{gap:7px}.iv-detail-actions .btn{padding:11px 7px;font-size:11px;min-height:46px}.iv-trade-row{gap:9px}.iv-trade-row .iv-asset-name{font-size:11px}.iv-trade-row .iv-asset-values small{font-size:8px;max-width:95px}.iv-trade-row .tile{width:34px;height:34px;border-radius:11px}.iv-trade-row .iv-asset-values strong{font-size:12px}.iv-div-chart{gap:5px;height:143px}.iv-div-amounts{gap:9px}.iv-div-amounts small{font-size:9px}.iv-div-amounts strong{font-size:14px}.iv-floating-add{right:18px;bottom:calc(92px + env(safe-area-inset-bottom));width:49px;height:49px;border-radius:16px}.bottom{justify-content:space-around}.bottom button{flex:1;min-width:0}.bottom button span{font-size:9px}.bottom button svg{height:20px;width:20px}.iv-advanced{padding:0 13px}.iv-advanced summary{font-size:11px}.iv-form-preview{padding:15px}.iv-form-preview>strong{font-size:26px}.iv-batch-row .row small{font-size:9px}.iv-chart-card .cardhead{margin-bottom:14px}}
 @media(max-width:370px){.iv-three-stats .stat b{font-size:14px}.iv-chart-controls .seg button{min-width:34px}.iv-metric button{padding:6px}.iv-hero .amount{font-size:35px}.iv-detail-actions .btn{font-size:10px}.iv-asset-values strong{font-size:12px}.iv-allocation{gap:18px}}
 
+</style><style id="pulso-layout-3-0-1">
+/* PULSO 3.0.1 - Safe-area and small-screen layout patch.
+   Inset values come from the browser; no hard-coded iPhone notch height.
+   This stylesheet does not change any financial data or calculations. */
+:root {
+  --pulso-safe-top: env(safe-area-inset-top, 0px);
+  --pulso-safe-right: env(safe-area-inset-right, 0px);
+  --pulso-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --pulso-safe-left: env(safe-area-inset-left, 0px);
+  --pulso-nav-height: calc(70px + var(--pulso-safe-bottom));
+  --pulso-fab-size: 49px;
+  --pulso-fab-gap: 12px;
+}
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--pulso-safe-top) + 16px);
+}
+body { min-height: 100vh; min-height: 100svh; }
+/* Keep scrolled content out of the transparent system status-bar area. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--pulso-safe-top);
+  background: var(--bg);
+  pointer-events: none;
+  z-index: 70;
+}
+.app {
+  padding-top: var(--pulso-safe-top);
+  padding-right: max(28px, var(--pulso-safe-right));
+  padding-left: max(28px, var(--pulso-safe-left));
+}
+.top, .logo, .logo > div { min-width: 0; }
+.overlay {
+  padding-top: calc(20px + var(--pulso-safe-top));
+  padding-right: max(20px, var(--pulso-safe-right));
+  padding-bottom: calc(20px + var(--pulso-safe-bottom));
+  padding-left: max(20px, var(--pulso-safe-left));
+}
+.dialog, .dialog.wide {
+  max-height: calc(100vh - var(--pulso-safe-top) - var(--pulso-safe-bottom) - 40px);
+  max-height: calc(100dvh - var(--pulso-safe-top) - var(--pulso-safe-bottom) - 40px);
+  scroll-padding-block: 18px;
+}
+.boot {
+  margin-top: calc(24px + var(--pulso-safe-top));
+}
+@media (max-width: 849px) {
+  .app {
+    padding: var(--pulso-safe-top)
+      max(17px, var(--pulso-safe-right))
+      calc(var(--pulso-nav-height) + var(--pulso-fab-size) + var(--pulso-fab-gap) + 24px)
+      max(17px, var(--pulso-safe-left));
+  }
+  .top { padding: 14px 0 24px; gap: 8px; }
+  .welcome { padding: 25px 22px; }
+  .welcome h1 {
+    font-size: clamp(30px, 8.7vw, 36px);
+    line-height: 1.14;
+    letter-spacing: -1.1px;
+    margin-top: 21px;
+  }
+  .welcome p { margin: 16px 0 20px; }
+  .welcome .steps { margin: 22px 0 24px; }
+  .welcome .steps span { min-width: 0; overflow-wrap: anywhere; }
+  .welcome p.risknote { font-size: 11px; line-height: 1.65; margin: 18px 0 0; }
+  .bottom {
+    padding: 9px max(10px, var(--pulso-safe-right))
+      calc(10px + var(--pulso-safe-bottom)) max(10px, var(--pulso-safe-left));
+  }
+  .bottom button { flex: 1; min-width: 0; width: auto; }
+  .iv-floating-add {
+    width: var(--pulso-fab-size);
+    height: var(--pulso-fab-size);
+    border-radius: 16px;
+    right: max(18px, calc(var(--pulso-safe-right) + 10px));
+    bottom: calc(var(--pulso-nav-height) + var(--pulso-fab-gap));
+  }
+  .toast {
+    bottom: calc(var(--pulso-nav-height) + var(--pulso-fab-size) + 24px);
+  }
+  .overlay { padding: calc(12px + var(--pulso-safe-top)) 0 0; }
+  .dialog, .dialog.wide {
+    padding: 22px max(20px, var(--pulso-safe-right))
+      calc(22px + var(--pulso-safe-bottom)) max(20px, var(--pulso-safe-left));
+    max-height: calc(100vh - var(--pulso-safe-top) - 12px);
+    max-height: calc(100dvh - var(--pulso-safe-top) - 12px);
+  }
+}
+@media (max-width: 360px) {
+  .app {
+    padding-right: max(12px, var(--pulso-safe-right));
+    padding-left: max(12px, var(--pulso-safe-left));
+  }
+  .welcome { padding: 22px 18px; }
+}
+/* Wide phones in landscape do not need a second navigation row. */
+@media (min-width: 850px) and (max-width: 1024px) and (pointer: coarse) {
+  .desktopnav { display: none; }
+  .logo { margin-right: auto; }
+  .top .devicepill { display: none; }
+}
+@media (min-width: 850px) {
+  .bottom { bottom: max(18px, calc(var(--pulso-safe-bottom) + 8px)); }
+}
+@media print {
+  body::before, .iv-floating-add { display: none !important; }
+  .app { padding: 0; }
+  body { min-height: 0; }
+}
+
 </style></head><body>
 <section id="boot" class="boot"><div class="kicker">PULSO / FINANZAS PERSONALES</div><h1>Tu patrimonio,<br>en perspectiva.</h1><p>Si este mensaje permanece y no aparecen botones funcionales, el visor no está ejecutando JavaScript o la app no ha podido iniciarse.</p><p><strong>Un adjunto HTML no es una app instalada.</strong> Para usar PULSO en el iPhone:</p><ol><li>Descomprime el paquete PULSO_3_Inversiones_App.zip y publica la carpeta PULSO_3 en un alojamiento HTTPS.</li><li>Abre la dirección publicada en Safari, no en el visor del chat ni de Archivos.</li><li>Pulsa Compartir → Añadir a pantalla de inicio → Abrir como app web.</li></ol><a href="https://docs.netlify.com/start/choose-your-path/">Cómo publicar la carpeta</a><br><a href="https://support.apple.com/es-es/guide/iphone/iphea86e5236/ios">Instrucciones de instalación de Apple</a><p id="bootError" role="alert"></p><noscript><p>JavaScript está desactivado en este visor. No introduzcas datos aquí.</p></noscript></section>
 <div id="appShell" class="app hidden"><header class="top"><div class="logo"><span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 13h4l3-7 4 13 3-8h4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>PULSO<small>FINANZAS PERSONALES</small></div></div><nav class="desktopnav" id="desktopNav" aria-label="Navegación principal"></nav><span class="devicepill">Registro local</span><button id="privacyButton" class="iconbtn" data-action="privacy" aria-label="Ocultar importes"></button><button class="iconbtn" data-action="settings" aria-label="Ajustes"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m10 3-1 3-3 1-3 3v4l3 3 3 1 1 3h4l1-3 3-1 3-3v-4l-3-3-3-1-1-3z"/><circle cx="12" cy="12" r="3"/></svg></button></header><main id="view"></main></div><nav id="mobileNav" class="bottom hidden" aria-label="Navegación móvil"></nav><div id="modalRoot"></div><div id="toastRoot" aria-live="polite"></div><input id="jsonInput" type="file" accept=".json,application/json" hidden><input id="csvInput" type="file" accept=".csv,text/csv,text/plain" hidden>
@@ -492,7 +606,7 @@ function plan(){let html=heading('DE LA INTENCI\u00d3N AL H\u00c1BITO','Tu plan 
 function budgetView(){const s=C.stats(state,ui.month,asOf()),bs=C.budgets(state,ui.month),total=bs.reduce((n,b)=>n+b.limit,0),used=bs.reduce((n,b)=>n+(s.cats[b.category]||0),0),uncovered=s.expense-used;return `<article class="card"><div class="planhero"><div><div class="kicker">DISPONIBLE EN TUS L\u00cdMITES</div><div class="big ${total-used<0?'negative':'positive'}">${money(total-used)}</div><p class="small muted">${money(used)} gastados de ${money(total)}</p></div>${tile('plan','lg')}</div>${progress(used,total)}${uncovered>0?`<p class="risknote gold">Adem\u00e1s: ${money(uncovered)} de gastos en categor\u00edas sin presupuesto.</p>`:''}</article><div class="sectiontitle"><h2>Presupuestos del mes</h2>${textBtn('+ Nuevo','newBudget')}</div><div class="grid2">${bs.map(b=>{const spent=s.cats[b.category]||0;return `<article class="card"><div class="between"><h3>${esc(b.category)}</h3><button class="iconbtn" data-action="editBudget" data-id="${b.id}" aria-label="Editar presupuesto ${esc(b.category)}">${icon('edit',16)}</button></div><div class="budgetnumbers"><b>${money(spent)}</b><span>/ ${money(b.limit)}</span></div>${progress(spent,b.limit)}<div class="between small mt"><span class="${spent>b.limit?'negative':'muted'}">${spent>b.limit?'Superado en '+money(spent-b.limit):'Quedan '+money(b.limit-spent)}</span><span class="muted">${ui.hide?'':pct(spent/b.limit*100)}</span></div><p class="graphhint">Vigente desde ${fmtMonth(b.from)}.</p></article>`}).join('')||`<article class="card">${empty('Pon l\u00edmites donde te importa','Define un importe mensual por categor\u00eda. Los l\u00edmites se mantienen hasta que los cambies.','newBudget','Crear presupuesto','plan')}</article>`}</div><p class="risknote">Al cambiar un presupuesto, elige desde qu\u00e9 mes se aplica. As\u00ed conservas los l\u00edmites de meses anteriores.</p>`}
 function goalView(){return `<div class="notice">Los objetivos son etiquetas de seguimiento. <strong>No suman dinero adicional a tu patrimonio</strong> ni transfieren fondos.</div><div class="sectiontitle"><h2>Tus pr\u00f3ximos pasos</h2>${textBtn('+ Objetivo','newGoal')}</div><div class="grid2">${state.goals.map(g=>{const saved=C.goalSaved(state,g),left=Math.max(0,g.target-saved),days=g.deadline?Math.ceil((new Date(g.deadline+'T12:00:00')-new Date(C.today()+'T12:00:00'))/86400000):null,months=days!==null?Math.max(1,Math.ceil(days/30.4375)):null;return `<article class="card"><div class="between">${tile('plan','blue')}<button class="iconbtn" data-action="editGoal" data-id="${g.id}" aria-label="Editar ${esc(g.name)}">${icon('edit',16)}</button></div><h2 class="mt">${esc(g.name)}</h2><p class="small muted" style="margin-top:7px">${g.mode==='account'?'Vinculado a '+esc(itemName(g.item)):'Ahorro asignado manualmente'}</p><div class="budgetnumbers"><b>${money(saved)}</b><span>/ ${money(g.target)}</span></div>${progress(saved,g.target)}<p class="small muted mt">${left?'Te faltan '+money(left):'Objetivo alcanzado.'}${g.deadline?' \u00b7 '+fmtDate(g.deadline,true):''}</p>${months&&left?`<p class="small ${days<0?'gold':'positive'}">${days<0?'La fecha objetivo ya ha pasado.':money(Math.ceil(left/months))+' al mes, sin rentabilidad, para llegar a la meta.'}</p>`:''}</article>`}).join('')||`<article class="card">${empty('Dale un destino a tu ahorro','Fondo de emergencia, vivienda, viaje o cualquier meta personal.','newGoal','Crear mi primer objetivo','plan')}</article>`}</div><article class="card mt"><div class="cardhead"><div><h2>Un escenario sencillo</h2><small>Cu\u00e1nto sumar\u00edas manteniendo un ahorro mensual</small></div>${icon('trend')}</div><form id="scenarioForm"><div class="formgrid">${amountField('Ahorro mensual (\u20ac)','scenarioAmount','')}${field('Horizonte','scenarioMonths',sel('scenarioMonths',opts([{value:12,label:'1 a\u00f1o'},{value:36,label:'3 a\u00f1os'},{value:60,label:'5 a\u00f1os'},{value:120,label:'10 a\u00f1os'}],12)))}</div><button type="submit" class="btn secondary full">Calcular escenario</button><div id="scenarioError" class="formerror mt" role="alert"></div><div id="scenarioResult"></div></form><p class="graphhint">C\u00e1lculo lineal: patrimonio actual + ahorro mensual \u00d7 meses. Sin rentabilidad, inflaci\u00f3n, impuestos ni cambios de valor. Es un supuesto, no una previsi\u00f3n.</p></article>`}
 function recurringView(){const due=C.due(state),over=due.filter(x=>x.date<=C.today());return `<div class="notice">Aqu\u00ed planificas n\u00f3minas, recibos y cuotas. Confirma cada operaci\u00f3n cuando ocurra. <strong>No se generan pagos ni avisos fuera de la app.</strong></div><div class="sectiontitle"><h2>${over.length} pendientes de registrar</h2>${textBtn('+ Recurrente','newRecurring')}</div><article class="card">${due.length?due.slice(0,24).map(x=>`<div class="listrow">${tile('clock',x.date<C.today()?'red':'blue')}<div class="grow"><span class="name">${esc(x.r.description)}</span><span class="meta">${fmtDate(x.date,true)} \u00b7 ${money(x.r.amount,2)}</span></div>${x.date<=C.today()?btn('Registrar','postRecurring',`data-id="${x.r.id}" data-date="${x.date}"`,'compact'): '<span class="tag neutral">Previsto</span>'}</div>`).join(''):empty('Todo al d\u00eda','No hay operaciones pendientes ni previstas en los pr\u00f3ximos 30 d\u00edas.','','','check')}${due.length>24?'<p class="risknote">Se muestran las 24 primeras; las siguientes aparecer\u00e1n al registrar estas.</p>':''}</article><div class="sectiontitle"><h2>Tus reglas recurrentes</h2></div><div class="grid2">${state.recurring.map(r=>`<article class="card"><div class="between"><h3>${esc(r.description)}</h3><button class="iconbtn" data-action="editRecurring" data-id="${r.id}" aria-label="Editar recurrente">${icon('edit',16)}</button></div><div class="budgetnumbers"><b>${money(r.amount,2)}</b><span>/${r.every===1?'mes':r.every===3?'trimestre':'a\u00f1o'}</span></div><p class="small muted">${esc(itemName(r.account))} \u00b7 ${r.kind==='expense'?'Gasto':r.kind==='income'?'Ingreso':'Traspaso'}</p><div class="between mt"><span class="tag ${r.active?'':'neutral'}">${r.active?'Activo':'Pausado'}</span>${textBtn(r.active?'Pausar':'Reactivar','toggleRecurring',`data-id="${r.id}"`)}</div></article>`).join('')||`<article class="card">${empty('Menos trabajo repetitivo','A\u00f1ade las operaciones que se repiten cada mes, trimestre o a\u00f1o.','newRecurring','Crear recurrente','clock')}</article>`}</div>`}
-function settings(){return `${heading('DATOS, PRIVACIDAD Y CONFIGURACI\u00d3N','Tu espacio.','Sin cuenta de usuario ni conexi\u00f3n bancaria.',false)}<div class="grid2"><article class="card"><div class="cardhead"><h2>Tu perfil</h2>${icon('settings')}</div>${rowStat('Nombre',esc(state.settings.name)||'Sin definir')}${rowStat('Moneda','EUR \u00b7 Euro')}${rowStat('Idioma','Espa\u00f1ol')}${textBtn('Editar nombre','profile')}<p class="risknote">Los saldos de efectivo se llevan en EUR. Inversiones admite precios en otras divisas con el cambio que registres en cada operaci\u00f3n o cierre.</p></article><article class="card"><div class="cardhead"><h2>Tus copias de seguridad</h2>${icon('shield')}</div><p class="small muted">La copia JSON incluye todo. Puedes cifrarla con una contrase\u00f1a antes de guardarla en Archivos o iCloud Drive.</p><div class="actions mt">${btn('Crear copia','backup')}${btn('Restaurar copia','importSelect','','secondary')}</div><p class="risknote">\u00daltima exportaci\u00f3n solicitada: ${state.settings.backupAt?esc(state.settings.backupAt):'ninguna'}. Comprueba que el archivo se haya guardado.</p></article><article class="card"><h2>Importar y organizar</h2><div class="settingrow"><div><h3>Movimientos CSV</h3><p>Vista previa y selecci\u00f3n de columnas</p></div>${btn('Importar','csvSelect','','secondary compact')}</div><div class="settingrow"><div><h3>Exportar movimientos</h3><p>CSV para revisar fuera de la app</p></div>${btn('Exportar','exportCsv','','secondary compact')}</div><div class="settingrow"><div><h3>Categor\u00edas personalizadas</h3><p>Clasifica a tu manera</p></div>${btn('A\u00f1adir','newCategory','','secondary compact')}</div>${legacy?`<div class="settingrow"><div><h3>Datos de la versi\u00f3n anterior</h3><p>Se importar\u00e1n solo con tu confirmaci\u00f3n</p></div>${btn('Revisar','legacyImport','','secondary compact')}</div>`:''}</article><article class="card"><div class="cardhead"><h2>Estado de esta instalaci\u00f3n</h2></div>${rowStat('Entorno',location.protocol==='file:'?'Archivo local':'Navegador / app web')}${rowStat('Guardado local',storageOK?'Disponible':'No disponible',storageOK?'positive':'negative')}${rowStat('Uso sin conexi\u00f3n',esc(swState))}${rowStat('Versi\u00f3n','PULSO 3.0.0')}${btn('C\u00f3mo instalar en el m\u00f3vil','install','','secondary full mt')}</article><article class="card"><h2>Privacidad, sin letra peque\u00f1a.</h2><p class="small muted mt">La app no env\u00eda tus registros financieros a un servidor. El alojamiento puede registrar visitas t\u00e9cnicas, pero no recibe tus cuentas ni movimientos desde esta app.</p><p class="small muted mt">Los datos guardados en el navegador <strong>no est\u00e1n cifrados por PULSO</strong>. El bot\u00f3n del ojo solo oculta importes en pantalla. Protege el dispositivo y no lo uses en un equipo compartido.</p><p class="small muted mt">No hay sincronizaci\u00f3n entre dispositivos. Al borrar los datos del navegador, cambiar de direcci\u00f3n web o de m\u00f3vil, necesitar\u00e1s tu copia JSON. No guardes contrase\u00f1as bancarias en notas.</p></article><article class="card"><h2>Ayuda y mantenimiento</h2><div class="settingrow"><div><h3>Entender los c\u00e1lculos</h3><p>Deudas, tarjetas, fechas y valoraciones</p></div>${btn('Ver gu\u00eda','help','','secondary compact')}</div><div class="settingrow"><div><h3>Explorar sin arriesgar datos</h3><p>Demostraci\u00f3n independiente</p></div>${btn('Ver ejemplo','demo','','secondary compact')}</div><div class="settingrow"><div><h3>Reiniciar PULSO</h3><p>Borra los datos locales de esta versi\u00f3n</p></div>${btn('Borrar','reset','','danger compact')}</div></article></div>`}
+function settings(){return `${heading('DATOS, PRIVACIDAD Y CONFIGURACI\u00d3N','Tu espacio.','Sin cuenta de usuario ni conexi\u00f3n bancaria.',false)}<div class="grid2"><article class="card"><div class="cardhead"><h2>Tu perfil</h2>${icon('settings')}</div>${rowStat('Nombre',esc(state.settings.name)||'Sin definir')}${rowStat('Moneda','EUR \u00b7 Euro')}${rowStat('Idioma','Espa\u00f1ol')}${textBtn('Editar nombre','profile')}<p class="risknote">Los saldos de efectivo se llevan en EUR. Inversiones admite precios en otras divisas con el cambio que registres en cada operaci\u00f3n o cierre.</p></article><article class="card"><div class="cardhead"><h2>Tus copias de seguridad</h2>${icon('shield')}</div><p class="small muted">La copia JSON incluye todo. Puedes cifrarla con una contrase\u00f1a antes de guardarla en Archivos o iCloud Drive.</p><div class="actions mt">${btn('Crear copia','backup')}${btn('Restaurar copia','importSelect','','secondary')}</div><p class="risknote">\u00daltima exportaci\u00f3n solicitada: ${state.settings.backupAt?esc(state.settings.backupAt):'ninguna'}. Comprueba que el archivo se haya guardado.</p></article><article class="card"><h2>Importar y organizar</h2><div class="settingrow"><div><h3>Movimientos CSV</h3><p>Vista previa y selecci\u00f3n de columnas</p></div>${btn('Importar','csvSelect','','secondary compact')}</div><div class="settingrow"><div><h3>Exportar movimientos</h3><p>CSV para revisar fuera de la app</p></div>${btn('Exportar','exportCsv','','secondary compact')}</div><div class="settingrow"><div><h3>Categor\u00edas personalizadas</h3><p>Clasifica a tu manera</p></div>${btn('A\u00f1adir','newCategory','','secondary compact')}</div>${legacy?`<div class="settingrow"><div><h3>Datos de la versi\u00f3n anterior</h3><p>Se importar\u00e1n solo con tu confirmaci\u00f3n</p></div>${btn('Revisar','legacyImport','','secondary compact')}</div>`:''}</article><article class="card"><div class="cardhead"><h2>Estado de esta instalaci\u00f3n</h2></div>${rowStat('Entorno',location.protocol==='file:'?'Archivo local':'Navegador / app web')}${rowStat('Guardado local',storageOK?'Disponible':'No disponible',storageOK?'positive':'negative')}${rowStat('Uso sin conexi\u00f3n',esc(swState))}${rowStat('Versi\u00f3n','PULSO 3.0.1')}${btn('C\u00f3mo instalar en el m\u00f3vil','install','','secondary full mt')}</article><article class="card"><h2>Privacidad, sin letra peque\u00f1a.</h2><p class="small muted mt">La app no env\u00eda tus registros financieros a un servidor. El alojamiento puede registrar visitas t\u00e9cnicas, pero no recibe tus cuentas ni movimientos desde esta app.</p><p class="small muted mt">Los datos guardados en el navegador <strong>no est\u00e1n cifrados por PULSO</strong>. El bot\u00f3n del ojo solo oculta importes en pantalla. Protege el dispositivo y no lo uses en un equipo compartido.</p><p class="small muted mt">No hay sincronizaci\u00f3n entre dispositivos. Al borrar los datos del navegador, cambiar de direcci\u00f3n web o de m\u00f3vil, necesitar\u00e1s tu copia JSON. No guardes contrase\u00f1as bancarias en notas.</p></article><article class="card"><h2>Ayuda y mantenimiento</h2><div class="settingrow"><div><h3>Entender los c\u00e1lculos</h3><p>Deudas, tarjetas, fechas y valoraciones</p></div>${btn('Ver gu\u00eda','help','','secondary compact')}</div><div class="settingrow"><div><h3>Explorar sin arriesgar datos</h3><p>Demostraci\u00f3n independiente</p></div>${btn('Ver ejemplo','demo','','secondary compact')}</div><div class="settingrow"><div><h3>Reiniciar PULSO</h3><p>Borra los datos locales de esta versi\u00f3n</p></div>${btn('Borrar','reset','','danger compact')}</div></article></div>`}
 function navigation(){const items=[['home','Resumen'],['wealth','Patrimonio'],['investments','Invertir'],['activity','Actividad'],['plan','Plan']];$('desktopNav').innerHTML=items.map(([t,l])=>`<button data-action="nav" data-tab="${t}" class="${ui.tab===t?'active':''}" aria-current="${ui.tab===t?'page':'false'}">${l}</button>`).join('');$('mobileNav').innerHTML=items.map(([t,l])=>`<button data-action="nav" data-tab="${t}" class="${ui.tab===t?'active':''}" aria-label="${l}" aria-current="${ui.tab===t?'page':'false'}">${icon(t,21)}<span>${l}</span></button>`).join('');$('privacyButton').innerHTML=icon(ui.hide?'eyeoff':'eye');$('privacyButton').setAttribute('aria-label',ui.hide?'Mostrar importes':'Ocultar importes');$('privacyButton').setAttribute('aria-pressed',String(ui.hide));if(!$('floatingAdd')){const b=document.createElement('button');b.id='floatingAdd';b.className='iv-floating-add';b.dataset.action='quick';b.setAttribute('aria-label','Registrar movimiento u operaci\u00f3n');b.innerHTML=icon('plus',24);document.body.appendChild(b);}}
 
 function render(){navigation();let notices='';if(demoMode)notices+=`<div class="demo-bar"><span><strong>DEMOSTRACI\u00d3N</strong> \u00b7 Datos ficticios, separados de los tuyos.</span><button data-action="exitDemo">Salir</button></div>`;if(location.protocol==='file:')notices+=`<div class="notice warn"><strong>Est\u00e1s abriendo un archivo, no una app instalada.</strong> Para el iPhone, publica la carpeta PULSO_3 y abre su direcci\u00f3n HTTPS en Safari. ${textBtn('Ver instrucciones','install')}</div>`;if(loadIssue)notices+=`<div class="notice error">${esc(loadIssue)}${corruptRaw?`<div class="actions">${btn('Guardar archivo original','exportCorrupt','','secondary')}${btn('Recuperar versi\u00f3n anterior','recover','','secondary')}</div>`:''}</div>`;if(state.settings.migration)notices+=`<div class="notice warn">${esc(state.settings.migration)} ${textBtn('Entendido','dismissMigration')}</div>`;const pages={home,wealth,activity,plan,settings,investments};$('view').innerHTML=notices+(pages[ui.tab]||home)();$('boot').classList.add('hidden');$('appShell').classList.remove('hidden');$('mobileNav').classList.remove('hidden');}
@@ -597,7 +711,46 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEven
 const packaged=document.querySelector('meta[name="pulso-package"]')?.content==='yes';
 if(packaged&&/^https?:$/.test(location.protocol)&&window.isSecureContext&&'serviceWorker'in navigator){swState='Activando...';navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{swState='Disponible';if(ui.tab==='settings')render()}).catch(()=>{swState='No disponible: revisa HTTPS y sw.js';if(ui.tab==='settings')render()});}else swState=packaged?'Requiere HTTPS y navegador compatible':'No incluido en el HTML suelto';
 let lastDay=C.today();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&C.today()!==lastDay){if(ui.month===lastDay.slice(0,7))ui.month=C.today().slice(0,7);lastDay=C.today();render();}});
-window.PulsoApp={version:'3.0.0',getState:()=>C.copy(state),isDemo:()=>demoMode,getStorageStatus:()=>({available:storageOK,problem:loadIssue}),getUI:()=>({...ui,modal:ui.modal?.type}),render};
+window.PulsoApp={version:'3.0.1',getState:()=>C.copy(state),isDemo:()=>demoMode,getStorageStatus:()=>({available:storageOK,problem:loadIssue}),getUI:()=>({...ui,modal:ui.modal?.type}),render};
 render();
 })();
+</script><script id="pulso-layout-controller">
+/* Layout only: no reads or writes to financial/browser storage. */
+(function () {
+  'use strict';
+  const root = document.documentElement;
+  const nav = document.getElementById('mobileNav');
+  const view = document.getElementById('view');
+  let frame = 0;
+  let lastHeight = 0;
+  function syncLayout() {
+    frame = 0;
+    if (nav) {
+      const height = Math.ceil(nav.getBoundingClientRect().height);
+      if (height > 0 && height !== lastHeight) {
+        root.style.setProperty('--pulso-nav-height', height + 'px');
+        lastHeight = height;
+      }
+    }
+    const add = document.getElementById('floatingAdd');
+    if (add && view) {
+      // Onboarding already has dedicated actions. Avoid covering them.
+      add.classList.toggle('hidden', Boolean(view.querySelector('.welcome, .iv-welcome')));
+    }
+  }
+  function scheduleLayout() {
+    if (!frame) frame = window.requestAnimationFrame(syncLayout);
+  }
+  if ('ResizeObserver' in window && nav) {
+    new ResizeObserver(scheduleLayout).observe(nav);
+  }
+  if ('MutationObserver' in window && view) {
+    new MutationObserver(scheduleLayout).observe(view, {childList: true});
+  }
+  window.addEventListener('resize', scheduleLayout, {passive: true});
+  window.addEventListener('orientationchange', scheduleLayout, {passive: true});
+  window.addEventListener('pageshow', scheduleLayout);
+  syncLayout();
+}());
+
 </script></body></html>

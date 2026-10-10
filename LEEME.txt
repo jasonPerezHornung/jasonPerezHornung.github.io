@@ -1,3 +1,10 @@
+PULSO 3.0.1 - PARCHE DE DISEÑO PARA IPHONE
+
+Empieza por ACTUALIZAR_3_0_1.txt. Conserva el mismo sitio y guarda una copia
+antes de publicar. Este parche no cambia los cálculos ni el formato de datos.
+
+----- GUÍA DEL PAQUETE ORIGINAL -----
+
 PULSO 3.0.0 - FINANZAS E INVERSIONES
 
 1. Abre EMPEZAR.html para consultar instalación, actualización y uso.
