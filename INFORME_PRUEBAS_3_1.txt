@@ -1,0 +1,97 @@
+PULSO 3.1.0 - VERIFICACION DE LA ENTREGA
+
+MOTOR Y LECTOR: 52 comprobaciones pasaron (Node).
+Se probo un unico extracto N26 original de 48 paginas. No prueba todos los
+formatos futuros o alternativos del banco. Comparacion independiente con
+PyMuPDF: 245 filas exactas en cuenta, descripcion, fecha e importe.
+16 pares internos producen 229 operaciones. Los 8 saldos finales concilian.
+No se distribuyen el PDF, los registros extraidos ni las fixtures privadas.
+
+INTERFAZ: 17 comprobaciones de flujo y 36 de layout/error/deshacer pasaron.
+Chromium, assets inyectados mediante set_content; localStorage simulado
+con Map y SHA-256 mediante puente de pruebas. La descompresion del PDF si
+se ejecuto con la API nativa del navegador. Anchuras: 320, 390, 430, 844,
+1280 px. Insets superiores/inferiores simulados en los tamanos de movil.
+
+NO VALIDADO:
+- iPhone fisico ni Safari/WebKit en dispositivo;
+- publicacion del usuario ni navegacion real HTTPS (bloqueada en pruebas);
+- persistencia real al cerrar navegador, instalacion PWA y actualizacion SW;
+- modo offline en origen publicado;
+- toda la matriz historica de la app, todos los PDF de N26 u otros bancos;
+- auditoria independiente de seguridad, fiscalidad o exactitud financiera.
+Se compararon balances, estadisticas ordinarias y cartera del demo con el
+motor de 3.0.1. No se afirma haber repetido todas las pruebas anteriores.
+
+CHECKS DE MOTOR
+01. All source pages read
+02. Native PDF rows and paired operations have expected counts
+03. Each operation ID is unique
+04. Each original row key occurs exactly once
+05. Repeated same-date same-amount real purchases are preserved
+06. Booking date and value date kept distinct
+07. Foreign currency purchase uses booked EUR, no second conversion
+08. Staging leaves original state untouched
+09. All statement balances reconcile exactly
+10. Spaces, including Amex and Fondo, remain cash savings, not debt or securities
+11. No investments fabricated from bank cash transfers
+12. Two mirror rows become one transfer
+13. Ambiguous movements are left pending
+14. Ambiguous Cetelem debit not guessed as consumption
+15. All reversals increase cash but reduce category expense
+16. Pending records update balance without counting as earned income or expense
+17. No raw IBAN copied to persisted records or account notes
+18. Same document reimport adds zero records and zero accounts
+19. Filename or document hash does not bypass duplicate matching
+20. Unknown/invalid classification rejected
+21. Negative purchase cannot be changed to income
+22. Future stale form cannot commit over newer revision
+23. A manual same-date/amount row requires duplicate review
+24. Explicit link to existing manual row keeps balance and prevents duplicate
+25. Adding a duplicate instead of linking is stopped by end-balance reconciliation
+26. Missing imported transaction can be reimported independently
+27. Wrong existing opening balance blocks, with no forced balancing entry
+28. Manual valuation inside statement period blocks hidden transaction effects
+29. Two source spaces cannot map to one account
+30. A later empty account can be explicitly rebuilt from statement opening
+31. A non-empty account cannot silently be rebased
+32. Loan payment explicitly splits verified principal and interest
+33. Debt classification cannot target ordinary cash account
+34. Overpayment beyond recorded debt is rejected
+35. Interest greater than total debit is rejected
+36. Explicit transfer to another owned account is not new income
+37. Bank metadata survives full JSON backup migration
+38. Previous app backup migrates without fabricated bank history
+39. Invalid reporting subtype cannot bypass restored validation
+40. Duplicated original bank key cannot appear on two transactions
+41. A removed source page fails closed
+42. An altered transaction amount fails source reconciliation
+43. An altered statement summary fails source reconciliation
+44. A missing value date fails rather than guessing
+45. A malformed binary PDF fails safely
+46. Unsupported PDF producer is rejected
+47. Canceled parsing does not continue to import
+48. Core demo balances are unchanged from original app
+49. Ordinary income/expense statistics unchanged without bank subtypes
+50. Investment positions unchanged
+51. Link to an investment-origin cash entry survives investment synchronization
+52. Bank keys are dropped if investment cash entry changes, requiring reconciliation again
+
+CHECKS DE INTERFAZ
+app boot
+PDF selected using file input
+browser DecompressionStream reader
+account mapping
+review
+reconciliation preview
+save
+229 movements
+8 cash accounts
+9 pending annotations
+balance
+same-file duplicate protection
+existing account mapping
+no-op reimport disabled
+classification editor
+classification preserves cash
+rename preserves bank key

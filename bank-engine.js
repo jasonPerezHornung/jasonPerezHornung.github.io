@@ -1,0 +1,83 @@
+/* PULSO bank statement engine. Values are integer euro cents.
+ * No network; source IDs are digests, never the owner's IBAN.
+ * Reconciliation is mandatory. No arbitrary balance adjustment is generated.
+ */
+(function(root){'use strict';
+const C=()=>root.PulsoCore;
+const check=(v,m)=>{if(!v)throw Error(m);};
+const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const sum=a=>a.reduce((n,v)=>n+v,0);
+const label=a=>a.name==='Cuenta ppal'?'Cuenta principal':a.name;
+async function hash(text){const input=typeof text==='string'?new TextEncoder().encode(text):text;check(root.crypto?.subtle,'La importaci\u00f3n necesita HTTPS (o localhost para pruebas).');return Array.from(new Uint8Array(await root.crypto.subtle.digest('SHA-256',input)),b=>b.toString(16).padStart(2,'0')).join('');}
+const scrub=s=>String(s||'').replace(/IBAN:.*?(?=\n|$)/g,'').replace(/\b[A-Z]{2}\d{2}[A-Z0-9 ]{10,30}/g,'[referencia bancaria omitida]').replace(/\+\d{9,15}/g,'[tel\u00e9fono omitido]').slice(0,350);
+function category(row){const k=norm(row.bankCategory),n=norm(row.description);if(/n26/.test(n))return 'Suscripciones';return ({comida:'Alimentaci\u00f3n','bares y restaurantes':'Restaurantes',coche:'Transporte',transporte:'Transporte',compras:'Compras',ocio:'Ocio','vivienda y facturas':'Vivienda','multimedia y tecnologia':'Suministros','gastos de negocio':'Gastos de negocio'})[k]||'Otros';}
+function classify(row){const positive=row.amount>0,desc=norm(row.description),detail=norm(row.detail.join(' ')),cat=category(row);let out={type:positive?'pending':'expense',category:cat,reason:'Categor\u00eda sugerida a partir del extracto.',target:'',interest:0};
+ if(row.counterpart){out.type='pending';out.category='Por clasificar';out.reason='El otro espacio o cuenta no aparece con su contrapartida en este PDF. Confirma titularidad y destino: no se considera ingreso ni gasto todav\u00eda.';}
+ else if(positive&&/mastercard/i.test(detail)){out.type='refund';out.reason='Abono en tarjeta: propuesta de devoluci\u00f3n. Comprueba la causa y la categor\u00eda. Se resta del gasto; no se considera salario.';}
+ else if(positive&&/salary|wage|nomina/.test(detail)){out.type='income';out.category='N\u00f3mina';out.reason='La referencia del extracto indica salario o n\u00f3mina.';}
+ else if(/cetelem|prestamo|hipoteca|amortiz/.test(desc+' '+detail)){out.type='pending';out.category='Por clasificar';out.reason='Posible pago de financiaci\u00f3n. El extracto no desglosa principal e intereses. No se inventa ese reparto.';}
+ else if(positive){out.category='Por clasificar';out.reason='Entrada de dinero no identificada como salario. Confirma si es ingreso, devoluci\u00f3n o traspaso propio.';}
+ return out;
+}
+async function parsePages(pages,fileHash=''){
+ check(Array.isArray(pages)&&pages.length>0&&pages.length<=250,'PDF sin p\u00e1ginas legibles.');const text=pages.map(p=>p.lines.join('\n')).join('\n');check(/N26/i.test(text),'No se reconoce un extracto N26. Usa CSV para otros bancos.');
+ const accountMap=new Map(),rows=[],periods=new Set();let owner='';
+ for(let p=0;p<pages.length;p++){
+  const lines=pages[p].lines.map(l=>String(l).trim()).filter(Boolean),pg=lines.find(l=>/^\d+\s*\/\s*\d+$/.test(l)),pn=pg?.match(/^(\d+)\s*\/\s*(\d+)$/);check(pn&&Number(pn[1])===p+1&&Number(pn[2])===pages.length,'Faltan p\u00e1ginas o el orden del PDF no es el original.');
+  const period=lines.find(l=>/^\d{2}\.\d{2}\.\d{4} hasta \d{2}\.\d{2}\.\d{4}$/.test(l));check(period,'No se ha reconocido el periodo en la p\u00e1gina '+(p+1)+'.');periods.add(period);
+  const ibans=lines.filter(l=>/^IBAN:/.test(l));const iban=ibans[ibans.length-1]?.match(/^IBAN:\s*([A-Z]{2}\d{2}[A-Z0-9]+)/)?.[1];check(iban&&(!owner||owner===iban),'El PDF mezcla titulares o cuentas no compatibles.');owner=iban;
+  const title=lines[0],isExtract=/^Extracto (bancario|del espacio) N/.test(title),isSummary=/^Resumen( de espacios)? N/.test(title);if(!isExtract&&!isSummary)continue;
+  const space=lines.find(l=>l.startsWith('Espacio: ')),name=space?space.slice(9).trim():'Cuenta ppal',k=norm(name);check(name.length>0&&name.length<=80,'Nombre de espacio no compatible.');if(!accountMap.has(k))accountMap.set(k,{name,key:k,rows:[],summary:null,pages:[]});const account=accountMap.get(k);account.pages.push(p+1);
+  if(isSummary){check(!account.summary,'Resumen de cuenta repetido.');const get=(key)=>{const line=lines.find(l=>l.startsWith(key+' '));check(line,'Falta '+key+' en el resumen.');return C().cents(line.slice(key.length));};account.summary={opening:get('Saldo previo'),outgoing:get('Transacciones salientes'),incoming:get('Transacciones entrantes'),closing:get('Tu nuevo saldo'),page:p+1};continue;}
+  let current=null;
+  for(const line of lines){const m=/^(.*?)\s+(\d{2}\.\d{2}\.\d{4})\s+([+-]\s*[\d.]+,\d{2})\s*\u20ac$/.exec(line);
+   if(m){const r={index:rows.length,account:k,description:m[1].trim(),date:C().csvDate(m[2]),amount:C().cents(m[3]),page:p+1,detail:[],bankCategory:'',valueDate:''};check(r.amount!==0,'Movimiento de importe cero no compatible.');rows.push(r);account.rows.push(r);current=r;continue;}
+   if(current){if(/Emitido en$/.test(line)){current=null;continue;}if(/^Fecha de valor /.test(line))current.valueDate=C().csvDate(line.slice(15));else if(!/^IBAN:|^\d+\s*\/\s*\d+$/.test(line)){current.detail.push(line);const cat=line.match(/^Mastercard\s*\u2022\s*(.+)$/);if(cat)current.bankCategory=cat[1].trim();}}
+  }
+ }
+ check(periods.size===1,'El PDF debe contener un solo periodo bancario.');const [first,last]=[...periods][0].split(' hasta '),start=C().csvDate(first),end=C().csvDate(last);check(start<=end&&end<=C().today(),'El periodo no es v\u00e1lido o termina en el futuro.');const accounts=[...accountMap.values()];check(accounts.length&&accounts.length<=50,'No hay cuentas legibles o hay demasiadas.');
+ for(const a of accounts){check(a.summary,'Falta el resumen para '+label(a)+'. Descarga el extracto completo.');const s=a.summary,ins=sum(a.rows.filter(r=>r.amount>0).map(r=>r.amount)),outs=sum(a.rows.filter(r=>r.amount<0).map(r=>r.amount));check(s.incoming>=0&&s.outgoing<=0,'Signos del resumen no reconocidos.');check(ins===s.incoming&&outs===s.outgoing&&s.opening+ins+outs===s.closing,'No cuadran los movimientos con el resumen de '+label(a)+'. No se importar\u00e1 el archivo.');a.bankKey='n26_'+(await hash(owner+'|'+a.key)).slice(0,32);a.mask=owner.slice(-4);a.label=label(a);a.count=a.rows.length;}
+ const occurrences=new Map();
+ for(const r of rows){check(r.date>=start&&r.date<=end&&C().validDate(r.valueDate),'Fecha fuera de periodo o falta fecha de valor (p\u00e1gina '+r.page+').');const a=accountMap.get(r.account),base=[a.bankKey,r.date,r.amount,norm(r.description),r.valueDate,norm(r.detail.join(' '))].join('|'),occ=(occurrences.get(base)||0)+1;occurrences.set(base,occ);r.sourceKey='br_'+(await hash(base+'|'+occ)).slice(0,40);r.counterpart=/^(A|De)\s+(.+)$/.exec(r.description);if(r.counterpart)r.counterpart={direction:r.counterpart[1],name:r.counterpart[2].trim(),key:norm(r.counterpart[2])};}
+ const paired=new Set(),ops=[];
+ for(const r of rows){if(paired.has(r.index))continue;let match=null;
+  if(r.counterpart&&accountMap.has(r.counterpart.key)&&((r.counterpart.direction==='A'&&r.amount<0)||(r.counterpart.direction==='De'&&r.amount>0))){const target=accountMap.get(r.counterpart.key);match=target.rows.find(q=>!paired.has(q.index)&&q.index!==r.index&&q.counterpart?.key===r.account&&q.date===r.date&&q.amount===-r.amount&&q.counterpart.direction!==r.counterpart.direction);}
+  if(match){paired.add(r.index);paired.add(match.index);const debit=r.amount<0?r:match,credit=r.amount>0?r:match;ops.push({id:'bo_'+debit.sourceKey.slice(3),rows:[debit,credit],date:r.date,amount:Math.abs(r.amount),account:debit.account,targetKey:credit.account,type:'transfer',category:'Traspaso',description:label(accountMap.get(debit.account))+' \u2192 '+label(accountMap.get(credit.account)),reason:'Dos apuntes opuestos conciliados: se registra un solo traspaso.',automatic:true,sourceKeys:[debit.sourceKey,credit.sourceKey],decision:'new',candidates:[]});}
+  else{paired.add(r.index);ops.push({id:'bo_'+r.sourceKey.slice(3),rows:[r],date:r.date,amount:Math.abs(r.amount),account:r.account,signed:r.amount,description:r.description,sourceKeys:[r.sourceKey],automatic:false,...classify(r),decision:'new',candidates:[]});}
+ }
+ return {source:'N26 PDF ES',start,end,fileHash,pageCount:pages.length,accounts,ops,rowCount:rows.length,transferCount:ops.filter(o=>o.automatic).length,classificationPending:ops.filter(o=>o.type==='pending').length};
+}
+function proposeMap(stmt,state){return Object.fromEntries(stmt.accounts.map(a=>[a.key,{id:state.items.find(i=>i.bankKey===a.bankKey)?.id||'new',reset:false,newId:C().id()}]));}
+function mappedId(stage,key){const m=stage.mapping[key];return m.id==='new'?m.newId:m.id;}
+function effects(t){return [{account:t.account,signed:t.kind==='income'?t.amount:-t.amount},...(t.kind==='transfer'?[{account:t.to,signed:t.amount}]:[])];}
+function expectedLegs(stage,op){return op.rows.map(r=>({account:mappedId(stage,r.account),signed:r.amount}));}
+function matchingTx(stage,state,op,strict=false){const legs=expectedLegs(stage,op);return state.tx.filter(t=>t.date===op.date&&legs.every(l=>effects(t).some(e=>e.account===l.account&&e.signed===l.signed))&&(!strict||norm(t.description)===norm(op.rows[0].description)));}
+function assessDuplicates(stage,state){const seen=new Set(state.tx.flatMap(t=>t.bankKeys||[]));for(const o of stage.statement.ops){o.candidates=[];const hits=o.sourceKeys.filter(k=>seen.has(k));if(hits.length){check(hits.length===o.sourceKeys.length,'Traspaso parcialmente importado. Revisa sus dos apuntes antes de continuar.');o.decision='known';continue;}const possible=matchingTx(stage,state,o);o.candidates=possible.map(t=>t.id);o.decision=possible.length?'review':'new';}return stage;}
+function operationTransactions(stage,op){const id=op.id,baseAccount=mappedId(stage,op.account),row=op.rows[0],positive=op.signed>0,amount=op.amount,source={source:'N26',sourceAccount:baseAccount,date:row.date,valueDate:row.valueDate,pages:op.rows.map(r=>r.page),bankCategory:row.bankCategory||'',original:row.detail.find(l=>l.startsWith('Importe original '))||'',statementStart:stage.statement.start,statementEnd:stage.statement.end,automatic:!!op.automatic,reason:op.reason||'',total:amount,signed:op.automatic?-amount:op.signed};
+ const base={id,date:op.date,amount,account:baseAccount,to:'',description:op.description.slice(0,160),category:(op.category||'Otros').slice(0,80),notes:('N26 \u00b7 fecha valor '+row.valueDate+' \u00b7 p. '+source.pages.join(', ')+(source.original?' \u00b7 '+source.original:'')).slice(0,500),bankKeys:op.sourceKeys.slice(),bankImport:source};
+ if(op.automatic)return [{...base,kind:'transfer',to:mappedId(stage,op.targetKey),reportAs:'normal'}];
+ if(op.type==='transfer'||op.type==='debt'){
+  check(op.target&&op.target!==baseAccount,'Elige otra cuenta para el traspaso o la deuda.');const interest=op.type==='debt'?op.interest||0:0;check(!positive||op.type!=='debt','Un pago de deuda debe ser saliente.');check(Number.isSafeInteger(interest)&&interest>=0&&interest<amount,'Los intereses deben ser positivos o cero y menores que el pago.');
+  return [{...base,kind:'transfer',account:positive?op.target:baseAccount,to:positive?baseAccount:op.target,amount:amount-interest,reportAs:'normal',bankImport:{...source,classification:op.type,interest}},...(interest?[{...base,id:id+':fee',kind:'expense',amount:interest,category:'Intereses y comisiones',description:(op.description+' (intereses/comisiones)').slice(0,160),bankKeys:[],reportAs:'normal',bankParent:id,bankImport:{...source,classification:'interest'}}]:[])];
+ }
+ check(['pending','income','expense','refund'].includes(op.type),'Clasificaci\u00f3n no compatible.');check(op.type!=='income'&&op.type!=='refund'||positive,'Solo un abono puede ser ingreso o devoluci\u00f3n.');check(op.type!=='expense'||!positive,'Un gasto debe ser saliente.');return [{...base,kind:positive?'income':'expense',reportAs:op.type==='pending'?'pending':op.type==='refund'?'refund':'normal',bankImport:{...source,classification:op.type}}];
+}
+function buildDraft(stage,state){const s=C().copy(state),stmt=stage.statement,ids=new Set(),newItems=[];
+ check(state.revision===stage.revision,'Tus datos han cambiado. Cierra y vuelve a importar el archivo.');
+ for(const a of stmt.accounts){const map=stage.mapping[a.key];check(map,'Falta asignar una cuenta.');const id=mappedId(stage,a.key);check(!ids.has(id),'No asignes dos espacios a la misma cuenta de PULSO.');ids.add(id);let item=s.items.find(i=>i.id===id);
+  if(map.id==='new'){check(!item,'Identificador nuevo repetido.');item={id,name:('N26 \u00b7 '+a.label).slice(0,80),kind:a.key==='cuenta ppal'?'bank':'savings',opened:stmt.start,opening:a.summary.opening,note:'Saldo inicial del extracto N26; no es un ingreso.',bankKey:a.bankKey};s.items.push(item);newItems.push(id);}
+  else{check(item&&['bank','savings','cash'].includes(item.kind),'Selecciona una cuenta de efectivo o ahorro, no una inversi\u00f3n ni una deuda.');check(!item.bankKey||item.bankKey===a.bankKey,'Esta cuenta est\u00e1 vinculada a otro espacio o IBAN.');
+   if(map.reset){check(!s.tx.some(t=>t.account===id||t.to===id)&&!s.valuations.some(v=>v.item===id)&&!s.recurring.some(r=>r.account===id||r.to===id),'Solo se puede reconstruir el inicio de una cuenta sin movimientos, valoraciones ni reglas.');item.opened=stmt.start;item.opening=a.summary.opening;}
+   check(item.opened<=stmt.start,'La cuenta '+item.name+' empieza despu\u00e9s del extracto. Reconstruye su inicio solo si est\u00e1 vac\u00eda, o corrige el hist\u00f3rico primero.');
+   const startBalance=item.opened===stmt.start?item.opening:C().balance(s,item,C().addDays(stmt.start,-1));check(startBalance===a.summary.opening,'El saldo inicial de '+item.name+' no coincide con el extracto. No se ha cambiado nada. Revisa el saldo de apertura o el mes anterior.');item.bankKey=a.bankKey;
+  }
+  check(!s.valuations.some(v=>v.item===id&&v.date>=stmt.start&&v.date<=stmt.end),'Hay un ajuste de saldo dentro del periodo en '+item.name+'. Rev\u00edsalo antes de importar para no ocultar movimientos.');
+ }
+ const added=[],linked=[],used=new Set();for(const op of stmt.ops){if(op.decision==='known')continue;check(op.decision!=='review','Revisa los posibles duplicados antes de importar.');if(op.decision==='existing'){check(op.existing&&op.candidates.includes(op.existing)&&!used.has(op.existing),'Elige un movimiento existente distinto para cada coincidencia.');used.add(op.existing);const t=s.tx.find(t=>t.id===op.existing);check(t,'El movimiento existente ya no est\u00e1.');t.bankKeys=[...new Set([...(t.bankKeys||[]),...op.sourceKeys])];linked.push(t.id);continue;}check(op.decision==='new','Decisi\u00f3n de importaci\u00f3n no v\u00e1lida.');const created=operationTransactions(stage,op);for(const t of created){check(!s.tx.some(e=>e.id===t.id),'Movimiento ya existente. Vuelve a revisar los duplicados.');if(t.kind==='transfer'){const target=s.items.find(i=>i.id===t.to),origin=s.items.find(i=>i.id===t.account);check(target&&origin,'La cuenta de destino no existe.');if(op.type==='debt')check(C().KINDS[target.kind].debt,'El destino del pago debe ser una deuda.');}
+   s.tx.push(t);added.push(t.id);if(t.kind!=='transfer'&&t.reportAs!=='pending'){const kind=t.reportAs==='refund'?'expense':t.kind;if(!s.categories[kind].includes(t.category))s.categories[kind].push(t.category);}}
+ }
+ for(const t of s.tx.filter(t=>added.includes(t.id)&&t.bankImport?.classification==='debt'))check(C().balance(s,t.to,t.date)<=0,'El principal supera la deuda pendiente. Revisa el saldo de la deuda.');C().validate(s);const reconciliation=stmt.accounts.map(a=>{const actual=C().balance(s,mappedId(stage,a.key),stmt.end);return {name:a.label,expected:a.summary.closing,actual,difference:actual-a.summary.closing};});check(reconciliation.every(r=>r.difference===0),'No cuadra el cierre con los registros de PULSO. Revisa duplicados, omisiones y movimientos manuales en ese periodo. No se ha guardado nada.');
+ return {state:s,reconciliation,added,linked,newItems,pending:s.tx.filter(t=>added.includes(t.id)&&t.reportAs==='pending').length,known:stmt.ops.filter(o=>o.decision==='known').length,refunds:stmt.ops.filter(o=>o.type==='refund'&&o.decision==='new').length};
+}
+root.PulsoBank={hash,parsePages,proposeMap,mappedId,assessDuplicates,buildDraft,operationTransactions,norm,scrub,matchingTx,version:'1.0.0'};
+})(typeof window==='undefined'?globalThis:window);

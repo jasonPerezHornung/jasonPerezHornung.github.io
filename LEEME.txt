@@ -1,39 +1,26 @@
-PULSO 3.0.1 - PARCHE DE DISEÑO PARA IPHONE
+PULSO 3.1.0 - IMPORTACION LOCAL DE EXTRACTOS N26
 
-Empieza por ACTUALIZAR_3_0_1.txt. Conserva el mismo sitio y guarda una copia
-antes de publicar. Este parche no cambia los cálculos ni el formato de datos.
+1. Guarda una copia JSON en PULSO antes de actualizar.
+2. Publica el CONTENIDO de esta carpeta donde ya esta tu index.html.
+   Manten dominio, ruta, repositorio y almacenamiento del navegador.
+3. Debes publicar tambien los cuatro archivos nuevos:
+   n26-pdf.js, bank-engine.js, bank-ui.js, bank.css.
+4. Comprueba en Ajustes que aparece PULSO 3.1.0.
+5. Actividad > Importar PDF > elegir archivo > cuentas > revision > confirmar.
 
------ GUÍA DEL PAQUETE ORIGINAL -----
+IMPORTANTE
+- No subas extractos PDF ni copias financieras al repositorio.
+- Este paquete no contiene el extracto del usuario ni sus movimientos.
+- Formato soportado: PDF original N26 ES con texto de openhtmltopdf.
+  No universal; no escaneos ni PDF cifrados; 15 MB y 250 paginas maximo.
+- Pendientes: cuentan para saldos, pero no para ingresos/gastos/presupuestos.
+- Revisa devoluciones, categorias, titularidad y principal/intereses.
+- No crea una cuenta de inversiones por el nombre de un espacio.
+- Datos locales sin cifrar; copia JSON cifrada opcional, sin nube ni bancos.
+- Copias posteriores a importar: usar solo PULSO 3.1 o posterior compatible.
+  Para volver atras, restaura la copia ANTERIOR con la app anterior.
+- GitHub Pages no se ha actualizado automaticamente.
+- No validado en iPhone fisico, HTTPS real, persistencia real ni modo offline.
 
-PULSO 3.0.0 - FINANZAS E INVERSIONES
-
-1. Abre EMPEZAR.html para consultar instalación, actualización y uso.
-2. Publica esta carpeta (la que contiene index.html) en un alojamiento HTTPS.
-3. No publiques copias JSON o CSV de tus finanzas en esa carpeta.
-4. Para actualizar PULSO 2: exporta primero una copia; utiliza el mismo sitio y ruta.
-5. Comprueba saldos, persistencia y copias con datos ficticios antes de usar datos reales.
-
-MÓDULO NUEVO
-Activos individuales: acciones, ETF, fondos, cripto, renta fija, materias primas,
-capital privado y otros. Compras, ventas FIFO, posiciones iniciales, splits,
-precios fechados, gráficos, dividendos y reinversión, CSV de precios y operaciones.
-
-CONSERVADO
-Finanzas, patrimonio neto, ingresos/gastos, deudas, presupuestos, objetivos,
-recurrentes y copias de PULSO 2. La migración no desglosa automáticamente carteras
-agregadas antiguas: sigue las instrucciones para no duplicar el patrimonio.
-
-LÍMITES IMPORTANTES
-No hay conexión a bancos/brókeres, cotizaciones en directo ni calendario automático.
-Los precios y fechas se registran manualmente o importando precios CSV.
-No se ejecutan operaciones financieras. No se calcula una declaración fiscal.
-El rendimiento porcentual es acumulado sobre compras, no anualizado, no TWR/TIR.
-Efectivo y costes en EUR; activos con precios en divisa y cambio manual.
-Datos locales sin cifrado de PULSO. Copia JSON normal y CSV también sin cifrado.
-Se mantienen copias cifradas opcionales mediante contraseña.
-No hay sincronización entre dispositivos. Haz copias externas.
-
-PRUEBAS
-Consulta INFORME_PRUEBAS.txt. Motor: 62 comprobaciones. Interfaz: 52 comprobaciones.
-Interfaz probada en Chromium con almacenamiento simulado. No probado en iPhone
-físico, persistencia real, instalación PWA ni publicación HTTPS. No está publicada.
+Lee EMPEZAR.html para pasos y limitaciones. Sin compilacion ni dependencias.
+Incluye INFORME_PRUEBAS_3_1.txt con alcance de las pruebas.
