@@ -1,0 +1,39 @@
+PULSO 3.0.1 - INFORME DEL AJUSTE DE DISEÑO
+10 octubre 2026
+
+Resultado: 285 / 285 comprobaciones satisfactorias.
+Motor: Chromium 144 en Linux, con automatización de navegador.
+Datos: ficticios, creados con la demostración de PULSO 3.0.0.
+
+ALCANCE
+- Pantallas: 320x568, 360x780, 375x812, 390x844, 393x852, 430x932,
+  393x720, 768x1024, 820x1180, 812x375, 852x393, 1024x768 y 1440x1000.
+- Márgenes superiores simulados de 0, 20, 24, 44, 47 y 59 px;
+  inferiores de 0, 20, 21 y 34 px; laterales de 0, 44 y 59 px.
+- Cabecera fuera del margen superior y sin desbordamiento horizontal.
+- Navegación funcional en Resumen, Patrimonio, Invertir, Actividad y Plan.
+- Subpestañas de inversión y ficha individual.
+- Formularios de cuenta, operación, precio y dividendo.
+- Formulario en una ventana de altura reducida. Esto no simula un teclado iOS.
+- Botón + oculto en bienvenida y separado de la barra inferior en móvil.
+- Carga del mismo conjunto de registros: patrimonio y cartera idénticos
+  a los calculados por la versión original.
+- No hay escrituras financieras provocadas por la nueva lógica de diseño.
+- Código JavaScript anterior idéntico salvo las etiquetas de versión;
+  se añade un módulo exclusivamente de diseño.
+- Manifiesto, iconos y cabeceras del alojamiento sin cambios.
+- Nueva identificación de caché del service worker.
+- Inspección visual de bienvenida, inversiones y formulario de operación.
+
+LÍMITES
+Los márgenes se inyectaron mediante variables CSS para comprobar la geometría.
+No se midió env(safe-area-inset-top) en un iPhone real.
+El almacenamiento fue un sustituto en memoria: no es una prueba de
+persistencia real del navegador. No se validaron instalación desde pantalla
+de inicio, gestos de Safari, rotación física, teclado iOS ni caché offline
+sobre HTTPS. No se han repetido todas las pruebas financieras de PULSO 3.0.0.
+La conservación del motor se verificó mediante comparación del código.
+Este informe no constituye una auditoría financiera ni de seguridad.
+
+El archivo INFORME_PRUEBAS.txt corresponde a la entrega original 3.0.0;
+no es el informe de este parche.

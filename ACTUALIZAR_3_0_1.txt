@@ -1,0 +1,51 @@
+PULSO 3.0.1 - AJUSTE DE PANTALLA PARA IPHONE
+10 octubre 2026
+
+QUÉ CAMBIA
+- La cabecera reserva la zona segura superior del dispositivo: no se coloca
+  debajo de la hora, la cámara o la batería.
+- Se respetan también los márgenes laterales al girar el teléfono.
+- El botón + no se muestra en las pantallas de bienvenida, que ya tienen
+  sus propios botones. En el resto queda separado de la navegación inferior.
+- Más espacio al final de las páginas para poder desplazar el contenido
+  por encima de los controles fijos.
+- Los formularios quedan por debajo de la zona segura superior y tienen
+  desplazamiento interno cuando no caben completos.
+- Se han compactado el título y los espacios de la tarjeta de bienvenida.
+
+LO QUE SE MANTIENE
+No cambia el motor financiero, las inversiones, el formato de las copias,
+las claves de almacenamiento ni la identidad de la app instalada.
+No hay descarga de datos bancarios ni precios nuevos con esta actualización.
+
+ACTUALIZAR UNA INSTALACIÓN EXISTENTE
+1. Antes de actualizar, abre PULSO y guarda una copia completa desde Ajustes.
+   Comprueba que el archivo existe fuera de la app. No lo subas al sitio web.
+2. Descomprime el paquete nuevo. Dentro está la carpeta PULSO_3, con index.html,
+   sw.js, el manifiesto y los iconos.
+3. En Netlify, abre TU PROYECTO EXISTENTE y entra en Deploys. Arrastra la carpeta
+   PULSO_3 a la zona de publicación manual de ese proyecto. No crees otro sitio.
+   Mantén exactamente la misma dirección y ruta que usa la app instalada.
+   No hace falta compilar. Publica toda la carpeta, no solo index.html.
+4. Cuando la publicación haya terminado, con conexión a Internet, cierra
+   completamente PULSO y vuelve a abrirla desde su icono. Comprueba en Ajustes
+   que aparece PULSO 3.0.1 y revisa tus saldos.
+5. Si aún indica 3.0.0, vuelve a abrir/recargar la misma dirección conectado
+   a Internet y repite el cierre y apertura. No borres datos para actualizar.
+   Abrir una pestaña no traslada por sí solo los registros de otro entorno.
+
+IMPORTANTE
+No desinstales la app, no borres datos del navegador y no cambies de dominio
+para aplicar este ajuste. Guarda siempre una copia externa antes de cambios.
+El paquete no se publica automáticamente: sustituye los archivos del sitio.
+
+VERIFICACIÓN
+Pruebas automáticas en Chromium con márgenes seguros y almacenamiento
+simulados. No es una validación en Safari/iPhone físico ni de persistencia
+real, instalación PWA o caché sin conexión. Revisa el resultado en tu iPhone.
+
+REFERENCIAS TÉCNICAS
+WebKit, viewport-fit y safe-area-inset:
+https://webkit.org/blog/7929/designing-websites-for-iphone-x/
+Netlify, actualizar el sitio existente desde Deploys:
+https://docs.netlify.com/start/choose-your-path/
